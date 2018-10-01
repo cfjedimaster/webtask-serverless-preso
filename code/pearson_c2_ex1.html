@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Pig Latin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	
+	<h2>Pig Latin Test</h2>
+
+	<div id="app">
+	<p>
+		<label for="input">Input</label>
+		<input id="input" v-model="input"> <button @click="translate" :disabled="working">Translate</button>
+	</p>
+
+	<p v-if="translation">
+		The translation is {{translation}}.
+	</p>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+	<script>
+	const API = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-extend.com/pearson_c2_ex1?input=';
+
+	new Vue({
+		el:'#app',
+		data:{
+			input:'',
+			translation:'',
+			working:false
+		},
+		methods:{
+			translate:function() {
+				if(this.input === '') return;
+				this.translation = '';
+				this.working = true;
+				console.log('translate '+this.input);
+				fetch(API + encodeURIComponent(this.input))
+				.then(res => res.json())
+				.then(res => {
+					this.working = false;
+					this.translation = res.piglatin;
+				});
+			}
+		}
+	});
+	</script>
+</body>
+</html>
