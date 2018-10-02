@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Pig Latin</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	
+	<h2>Score Keeper</h2>
+
+	<div id="app">
+	<p>
+		<label for="score">Record New Score</label>
+		<input id="score" v-model="score" type="number"> <button @click="addScore" :disabled="working">Store</button>
+	</p>
+
+	<p v-if="totalGames">
+		You've now played {{totalGames}} games with an average score of {{averageScore}}.
+	</p>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+	<script>
+	const API = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-extend.com/pearson_c4_ex1?score=';
+
+	new Vue({
+		el:'#app',
+		data:{
+			score:'',
+			totalGames:'',
+			averageScore:'',
+			working:false
+		},
+		methods:{
+			addScore:function() {
+				if(this.score === '') return;
+				this.totalGames = '';
+				this.working = true;
+
+				fetch(API + encodeURIComponent(this.score))
+				.then(res => res.json())
+				.then(res => {
+					console.log(res);
+					this.working = false;
+					this.totalGames = res.games;
+					this.averageScore = res.average;
+				});
+			}
+		}
+	});
+	</script>
+</body>
+</html>
