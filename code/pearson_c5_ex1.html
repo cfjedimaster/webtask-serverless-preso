@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Recipe Search</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	
+	<h2>Recipe Search</h2>
+
+	<div id="app">
+	<p>
+		<label for="search">Enter recipe search term:</label>
+		<input id="search" v-model="search" type="search"> <button @click="searchAPI" :disabled="working">Search</button>
+	</p>
+
+		<div v-for="recipe in results">
+			<h2>{{recipe.name}} (Calories: {{recipe.calories}})</h2>
+			<a :href="recipe.url"><img :src="recipe.image"></a>
+		</div>
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+	<script>
+	const API = 'https://wt-c2bde7d7dfc8623f121b0eb5a7102930-0.sandbox.auth0-extend.com/pearson_c5_ex1?search=';
+
+	new Vue({
+		el:'#app',
+		data:{
+			search:'',
+			results:[],
+			working:false
+		},
+		methods:{
+			searchAPI:function() {
+				if(this.search === '') return;
+				this.results = [];
+				this.working = true;
+
+				fetch(API + encodeURIComponent(this.search))
+				.then(res => res.json())
+				.then(res => {
+					console.log(res);
+					this.working = false;
+					this.results = res;
+				});
+			}
+		}
+	});
+	</script>
+</body>
+</html>
